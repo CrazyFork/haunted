@@ -13,7 +13,7 @@ export const createContext = (defaultValue) => {
       this.eventHandler = (event) => {
         const { detail } = event;
       
-        if (detail.Context === Context) {
+        if (detail.Context === Context) { // register new Context listener
           detail.value = this.value;
       
           detail.unsubscribe = () => {
@@ -37,6 +37,8 @@ export const createContext = (defaultValue) => {
       this.removeEventListener(contextEvent, this.eventHandler);
     }
 
+    // 当value被改变的时候, all listener will be triggered with new value.
+    // which in return call consumer's update method, 
     set value(value) {
       this._value = value;
       this.listeners.forEach(callback => callback(value));

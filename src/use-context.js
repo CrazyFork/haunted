@@ -42,7 +42,7 @@ const useContext = hook(class extends Hook {
       cancelable: true, // to be able to cancel
       composed: true, // to pass ShadowDOM boundaries
     }));
-
+    // :tdone, wtf?,  it got setted in createContext
     const { unsubscribe, value } = detail;
 
     this.value = unsubscribe ? value : Context.defaultValue;

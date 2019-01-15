@@ -37,19 +37,20 @@ class Container {
   }
 
   update() {
-    if(this._updateQueued) return;
-    read(() => {
-      let result = this.handlePhase(updateSymbol);
-      write(() => {
-        this.handlePhase(commitSymbol, result);
+    if(this._updateQueued) return;                      // 当前队列里边如果有在执行 rendering, 不允许update
+    read(() => {                                        // 先push一个task到update queue
+      let result = this.handlePhase(updateSymbol);      
+      write(() => {                                     // 将执行完的结果result以闭包的形式传递到write queue, 即commit phase
+        this.handlePhase(commitSymbol, result);         // 
 
-        if(this[effectsSymbol]) {
+        if(this[effectsSymbol]) {                       // 执行side effect, push task 到队列里边
           write(() => {
             this.handlePhase(effectsSymbol);
           });
         }
       });
-      this._updateQueued = false;
+      this._updateQueued = false; //:tdone, why set false here? , 因为 update phase 已经commit了
+      // 因为js是单线程的，所以这个位置应该是为了防止重复push the same update phase.
     });
     this._updateQueued = true;
   }
@@ -72,7 +73,7 @@ class Container {
   render() {
     setCurrent(this);
     let result = this.args ?
-      this.renderer.apply(this.host, this.args) :
+      this.renderer.apply(this.host, this.args) : //:bm
       this.renderer.call(this.host, this.host);
     clear();
     return result;
@@ -97,7 +98,7 @@ class Container {
       }
     }
 
-    let contexts = this[contextSymbol];
+    let contexts = this[contextSymbol]; //:todo, what is contextSymbol
     if(contexts) {
       for(let context of contexts) {
         context.unsubscribe();

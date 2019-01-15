@@ -1,3 +1,115 @@
+# Notes
+
+## annotation
+
+
+```
+tdone,    todo is done
+todo: 
+bm:       bookmark
+```
+
+
+```
+src
+├── component.js          // 这个文件扩展了HtmlElement元素，对 props 做了拦截， 会自动刷新shadow root节点.
+├── core.js               // 核心文件，主要的 scheduler, 主要处理update/commit/side effect phase
+├── create-context.js     // 创建一个Context对象, 包括Consumer&Provider.
+├── haunted.js            
+├── hook.js               // hook 对 hook基类的定义, 和use的封装， 定义
+├── interface.js          // 主要是记录当前的progress
+├── lit.js
+├── symbols.js            // 各种symbols.
+├── use-callback.js
+├── use-context.js        // 定义了useContext这个hook的行为， 即创建Hook绑定current
+├── use-effect.js         
+├── use-memo.js
+├── use-reducer.js
+├── use-state.js          // state hook, context hook 这两个看懂了应该就一样了
+└── virtual.js
+```
+
+
+
+* Reflect & receiver 
+
+- `component.js`
+这个地方一直是我难以理解的点， 现在我终于明白了 receiver, 是当前对象 `a.bmp`, 那receiver 就是a, 而 target 是`bmp`属性在`[[Get]]`真正定义的对象, 即原型链上的某个东西， 如果是proxy那么target就是被wrap的对象， 如果bmp是以`getter`或者`setter`方法定义的, 那么 `getter` 和 `setter` 方法就会在`receiver`上做evaluation. 说白了 target 就是属性再被查找的真正位置。
+
+## class & instances  & functions
+* `renderer(element: any, args: any[])=>any`: 真正底层的渲染函数, 这里是lit-html的函数估计。
+
+
+### in core.js
+
+
+#### `Container`
+包装层， 主要用于schedule how HtmlElement are rendered.
+
+methods:
+* `render()=>renderer(this.host, this.args)`: 调用renderer去做真正的渲染逻辑
+
+
+
+### `interface.js`
+
+#### `el: Container`
+desc: 记录当前被更新的Container信息
+
+
+
+props:
+* `contextSymbol: Hook[]`: 
+* `hooks: Map<id, Hook>`,
+* `virtual: boolean`:
+* `host: HtmlElement`: 
+
+
+
+### `Hook` in `hook.js`
+
+#### `Hook`
+props:
+* `id`, id in `interface.js`
+* `el`, current in `interface.js`
+
+methods:
+* `<A> update(value: A)=>value: A`: 
+
+#### `function`
+* `use(Hook, ...args)=>Hook.update(...args)`: 将Hook和current进行绑定，并调用Hook的update方法
+* `hook(Hook)=>(...args)=>Hook.update(...args)`: 
+
+
+
+#### `ContextHook extends Hook`
+props:
+
+
+methods:
+
+#### `function`
+
+
+### Context in `createContext`:
+这里边收获比较大的是CustomEvent & dispatchEvent 的组合使用. 还有就是温习了下pub&sub模式
+
+#### Provider:
+
+#### Consumer:
+
+
+## Links
+
+* Reflect & receiver
+    * [You-Dont-Know-JS  - Chapter 7: Meta Programming](https://github.com/getify/You-Dont-Know-JS/blob/master/es6%20%26%20beyond/ch7.md#proxies)
+    * [what is a receiver in JavaScript?](https://stackoverflow.com/questions/37563495/what-is-a-receiver-in-javascript)
+
+
+
+
+
+
 # Haunted 🦇 🎃
 
 React's Hooks API but for standard web components and [hyperHTML](https://codepen.io/WebReflection/pen/pxXrdy?editors=0010) or [lit-html](https://polymer.github.io/lit-html/). 

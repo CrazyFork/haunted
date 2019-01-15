@@ -7,7 +7,7 @@ class Hook {
     this.el = el;
   }
 }
-
+// todo: use 的执行时机？
 function use(Hook, ...args) {
   let id = notify();
   let hooks = current[hookSymbol];
