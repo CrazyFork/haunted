@@ -12,7 +12,7 @@ function use(Hook, ...args) {
   let id = notify();
   let hooks = current[hookSymbol];
   
-  let hook = hooks.get(id);
+  let hook = hooks.get(id); // todo: 这是不是意味着只能有一个hook被执行？
   if(!hook) {
     hook = new Hook(id, current, ...args);
     hooks.set(id, hook);

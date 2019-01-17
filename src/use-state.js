@@ -10,7 +10,7 @@ const useState = hook(class extends Hook {
   update() {
     return this.args;
   }
-
+  
   updater(value) {
     if (typeof value === "function") {
       const updaterFn = value;

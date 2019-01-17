@@ -108,7 +108,8 @@ methods:
 
 
 
-
+#todo
+* 我觉得这一版由于el上的hookSymbol是一个<id, Hook>的map， 这意味着一个container只能绑定一个hook对象。如果这个位置是<id, Array<Hook>>, 就不会有这样的问题了。
 
 # Haunted 🦇 🎃
 
